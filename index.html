@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Privacidad: NO indexar (subdominio interno, demo cliente) -->
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+  <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="bingbot" content="noindex, nofollow, noarchive, nosnippet">
+  <meta name="referrer" content="no-referrer">
+  <meta name="description" content="Producto de leads B2B para gestoras de residuos en Cataluña. Dataset accionable desde 8 fuentes públicas: PRTR-ES, RGPGRC, OSM. 889 empresas catalanas geolocalizadas y priorizadas por encaje con tu planta.">
+  <meta name="keywords" content="leads residuos, prospección B2B, PRTR-ES, gestoras residuos Catalunya, dataset empresas catalanas">
+  <title>Leads de residuos B2B — Inteligencia comercial para gestoras catalanas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%BB%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#" class="logo">
+        ♻️ <span>residuos.cat</span>
+      </a>
+      <nav class="nav">
+        <a href="#producto">Producto</a>
+        <a href="#cifras">Cifras</a>
+        <a href="#como-funciona">Cómo funciona</a>
+        <a href="#precios">Precios</a>
+        <a href="#contacto" class="nav-cta">Contacto</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <span class="eyebrow">Producto de leads B2B · Cataluña</span>
+        <h1>Empresas que generan residuos<br>cualificadas para tu fuerza comercial</h1>
+        <p class="lead">
+          Dataset accionable de <strong>889 empresas catalanas</strong> productoras de residuos
+          industriales, cruzadas desde 8 fuentes públicas oficiales, priorizadas por encaje
+          con la planta de tu gestora.
+        </p>
+        <div class="hero-ctas">
+          <a href="#demo" class="btn btn-primary">Probar la demo en vivo</a>
+          <a href="#contacto" class="btn btn-secondary">Solicitar dataset completo</a>
+        </div>
+        <p class="hero-fineprint">
+          Sin SABI ni Informa · Solo fuentes públicas con licencia comercial · RGPD B2B desde el origen
+        </p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n">889</div><div class="stat-label">empresas catalanas</div></div>
+        <div class="stat"><div class="stat-n">21.600</div><div class="stat-label">leads empresa × LER</div></div>
+        <div class="stat"><div class="stat-n">503</div><div class="stat-label">códigos LER cubiertos</div></div>
+        <div class="stat"><div class="stat-n">6 años</div><div class="stat-label">de histórico PRTR</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEMO ── -->
+  <section id="demo" class="section section-dark">
+    <div class="container">
+      <h2>Demo interactiva en vivo</h2>
+      <p class="section-lead">
+        Ajusta los parámetros como si fueras una gestora. Verás cómo cambia el top de leads,
+        el mapa y la distribución. <strong>Los contactos (email/teléfono/NIF) están ocultos en la
+        demo</strong> — se entregan en el dataset completo.
+      </p>
+
+      <div class="demo-card">
+        <div class="demo-iframe-wrap">
+          <!--
+            EN PRODUCCIÓN: cambiar este iframe por la URL del despliegue.
+            Ejemplos:
+              https://residuos-cat-demo.streamlit.app/
+              https://huggingface.co/spaces/Habanacasta88/residuos-cat
+          -->
+          <iframe
+            id="demo-iframe"
+            src="https://residuos-cat-demo.streamlit.app/?embed=true"
+            title="Dashboard demo Residuos Catalunya"
+            loading="lazy"
+            allow="fullscreen"></iframe>
+          <div class="demo-fallback">
+            <p>¿El dashboard no carga? Abre en una pestaña nueva:</p>
+            <a href="https://residuos-cat-demo.streamlit.app/" target="_blank" rel="noopener" class="btn btn-primary">
+              Abrir dashboard demo →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRODUCTO ── -->
+  <section id="producto" class="section">
+    <div class="container">
+      <h2>El problema y lo que entregamos</h2>
+
+      <div class="two-col">
+        <div class="col">
+          <h3>El problema</h3>
+          <ul class="problem-list">
+            <li>Tu equipo comercial sabe que en Cataluña hay miles de empresas captables, pero <strong>no sabe cuáles, dónde están, ni qué residuos generan</strong>.</li>
+            <li>Las bases empresariales privadas (<em>SABI, Informa</em>) cuestan 3-12 k€/año y <strong>no traen el dato de residuos</strong>.</li>
+            <li>Los registros públicos (PRTR, RGPGRC, ARC) <strong>existen</strong>, pero están dispersos en 8 portales, en formatos distintos, sin geolocalizar y sin score comercial.</li>
+            <li>Cruzarlos a mano son <strong>400 horas</strong> de trabajo y conocimiento de dominio.</li>
+          </ul>
+        </div>
+        <div class="col">
+          <h3>Lo que entregamos</h3>
+          <ul class="solution-list">
+            <li>📊 <strong>Excel multi-hoja</strong> con 21.600 leads filtrable por LER, provincia, distancia, capacidad</li>
+            <li>🗺️ <strong>Mapa interactivo</strong> con 8 capas (leads, gestoras competidoras, heatmap volumen, radio operativo)</li>
+            <li>🖥️ <strong>Dashboard ejecutable</strong> donde tu equipo comercial juega con parámetros en vivo</li>
+            <li>📄 <strong>Documento metodológico</strong> auditable que puedes mostrar a tu propio cliente final</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CIFRAS ── -->
+  <section id="cifras" class="section section-alt">
+    <div class="container">
+      <h2>Cobertura real del dataset actual</h2>
+      <div class="cifras-grid">
+        <div class="cifra-card">
+          <div class="cifra-icon">🏭</div>
+          <div class="cifra-num">889</div>
+          <div class="cifra-label">Empresas productoras únicas</div>
+          <div class="cifra-sub">declaradas en PRTR-ES (MITECO)</div>
+        </div>
+        <div class="cifra-card">
+          <div class="cifra-icon">🗺️</div>
+          <div class="cifra-num">52 %</div>
+          <div class="cifra-label">Coord precisa</div>
+          <div class="cifra-sub">466 empresas geolocalizadas vía Nominatim / ICGC</div>
+        </div>
+        <div class="cifra-card">
+          <div class="cifra-icon">🌐</div>
+          <div class="cifra-num">54 %</div>
+          <div class="cifra-label">Con URL corporativa</div>
+          <div class="cifra-sub">409 webs descubiertas + verificadas</div>
+        </div>
+        <div class="cifra-card">
+          <div class="cifra-icon">📧</div>
+          <div class="cifra-num">29 %</div>
+          <div class="cifra-label">Con email B2B</div>
+          <div class="cifra-sub">216 emails corporativos extraídos del aviso legal</div>
+        </div>
+        <div class="cifra-card">
+          <div class="cifra-icon">📞</div>
+          <div class="cifra-num">17 %</div>
+          <div class="cifra-label">Con teléfono</div>
+          <div class="cifra-sub">131 teléfonos verificables</div>
+        </div>
+        <div class="cifra-card">
+          <div class="cifra-icon">⚔️</div>
+          <div class="cifra-num">865</div>
+          <div class="cifra-label">Gestoras competidoras</div>
+          <div class="cifra-sub">RGPGRC scrapeado y geolocalizado</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CÓMO FUNCIONA ── -->
+  <section id="como-funciona" class="section">
+    <div class="container">
+      <h2>Cómo se construye</h2>
+      <p class="section-lead">
+        Pipeline reproducible y versionado. Cada celda del dataset final tiene trazabilidad
+        de su fuente, año y nivel de confianza.
+      </p>
+
+      <div class="pipeline">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h4>Extracción</h4>
+          <p>PRTR-ES, ARC × 6, RGPGRC, OSM, ICGC. Cacheado local.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h4>Entity resolution</h4>
+          <p>Fuzzy match con bloqueo por provincia. Geocoding híbrido.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h4>Enriquecimiento</h4>
+          <p>Scraping heurístico de webs corporativas. Catálogo LER, CCAE.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h4>Scoring</h4>
+          <p>0-100 con 5 factores ponderados según tus parámetros.</p>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <h4>Entrega</h4>
+          <p>Excel + mapa + dashboard + metodología auditable.</p>
+        </div>
+      </div>
+
+      <div class="fuentes-grid">
+        <div class="fuente">PRTR-ES <small>MITECO</small></div>
+        <div class="fuente">Dades Obertes <small>Catalunya</small></div>
+        <div class="fuente">RGPGRC <small>ARC</small></div>
+        <div class="fuente">Catàleg LER <small>ARC</small></div>
+        <div class="fuente">Vies de gestió <small>ARC</small></div>
+        <div class="fuente">Accidents greus <small>ARC</small></div>
+        <div class="fuente">OSM Nominatim</div>
+        <div class="fuente">ICGC <small>Catalunya</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRECIOS ── -->
+  <section id="precios" class="section section-alt">
+    <div class="container">
+      <h2>Inversión</h2>
+      <p class="section-lead">Encargo único cerrado, sin suscripciones. Tres niveles según el alcance.</p>
+
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="price-tier">Starter</div>
+          <div class="price-num">490 €</div>
+          <ul>
+            <li>Cataluña completa</li>
+            <li>1 código LER objetivo</li>
+            <li>30 contactos web cualificados</li>
+            <li>Excel + mapa estático</li>
+            <li>Entrega en 5 días</li>
+          </ul>
+          <a href="#contacto" class="btn btn-secondary btn-block">Pedir presupuesto</a>
+        </div>
+
+        <div class="price-card price-card-featured">
+          <div class="price-badge">Más popular</div>
+          <div class="price-tier">Standard</div>
+          <div class="price-num">1.990 €</div>
+          <ul>
+            <li>Cataluña completa</li>
+            <li><strong>Hasta 3 códigos LER objetivo</strong></li>
+            <li><strong>100 contactos web cualificados</strong></li>
+            <li>Excel + mapa + <strong>dashboard local</strong></li>
+            <li>Documento metodológico</li>
+            <li>1 sesión de transferencia (45 min)</li>
+            <li>Entrega en 10 días</li>
+          </ul>
+          <a href="#contacto" class="btn btn-primary btn-block">Pedir presupuesto</a>
+        </div>
+
+        <div class="price-card">
+          <div class="price-tier">Pro</div>
+          <div class="price-num">4.990 €</div>
+          <ul>
+            <li>Cataluña completa</li>
+            <li><strong>Hasta 8 códigos LER objetivo</strong></li>
+            <li><strong>250 contactos web cualificados</strong></li>
+            <li>Excel + mapa + <strong>dashboard publicado online</strong></li>
+            <li>Documento metodológico</li>
+            <li>2 sesiones (validación + transferencia)</li>
+            <li><strong>Actualización gratuita 1 mes</strong></li>
+            <li>Entrega en 3 semanas</li>
+          </ul>
+          <a href="#contacto" class="btn btn-secondary btn-block">Pedir presupuesto</a>
+        </div>
+      </div>
+
+      <p class="pricing-note">
+        Otras CCAA, verticales adyacentes (FV/eólica, Seveso, ADR), integración CRM
+        o universo completo de contactos: propuesta a medida desde 9 k€.
+        Reunión kickoff de 60 minutos sin compromiso.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CONTACTO ── -->
+  <section id="contacto" class="section">
+    <div class="container">
+      <div class="contact-box">
+        <h2>¿Hablamos?</h2>
+        <p>
+          Reunión kickoff de <strong>60 minutos sin compromiso</strong> para validar si tu caso
+          encaja con el producto. Saldrás con una propuesta cerrada en 5 días.
+        </p>
+
+        <div class="contact-methods">
+          <a href="mailto:yoelcp1988@gmail.com?subject=Producto%20leads%20residuos%20-%20Consulta&body=Hola%2C%0A%0AEstoy%20interesado%2Fa%20en%20conocer%20el%20producto%20de%20leads%20de%20residuos.%0A%0AEmpresa%3A%20%5B...%5D%0AZona%20operativa%3A%20%5B...%5D%0AC%C3%B3digos%20LER%20de%20inter%C3%A9s%3A%20%5B...%5D%0A%0AGracias."
+             class="btn btn-primary">
+            📧 Escribir email
+          </a>
+          <a href="https://www.linkedin.com/in/yoelcastano" target="_blank" rel="noopener" class="btn btn-secondary">
+            💼 LinkedIn
+          </a>
+        </div>
+
+        <div class="contact-direct">
+          <strong>yoelcp1988@gmail.com</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LIMITACIONES (transparencia) ── -->
+  <section class="section section-alt">
+    <div class="container">
+      <h2>Limitaciones que declaramos por adelantado</h2>
+      <p class="section-lead">Honestidad metodológica: lo que el dataset NO trae.</p>
+
+      <div class="limits-grid">
+        <div class="limit">
+          <strong>Desfase temporal</strong>
+          <p>PRTR-ES publica con 1-2 años de retraso respecto al ejercicio.</p>
+        </div>
+        <div class="limit">
+          <strong>Pymes pequeñas no incluidas</strong>
+          <p>Solo complejos del Anexo I del RD 508/2007 (industria mediana-grande).</p>
+        </div>
+        <div class="limit">
+          <strong>NIF en 22 % de empresas</strong>
+          <p>Limitado por fuentes abiertas. Ampliable con presupuesto SABI/Informa.</p>
+        </div>
+        <div class="limit">
+          <strong>Sin CNAE / facturación / empleados</strong>
+          <p>Requiere bases empresariales privadas; cotización aparte.</p>
+        </div>
+        <div class="limit">
+          <strong>Coord aproximada en 45 %</strong>
+          <p>Centroide de provincia cuando no se geocoded directamente (flag explícito).</p>
+        </div>
+        <div class="limit">
+          <strong>Sin datos nominales</strong>
+          <p>RGPD B2B estricto. Solo persona jurídica + contactos corporativos.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-col">
+        <div class="logo">♻️ residuos.cat</div>
+        <p>Producto puntual de leads B2B para gestoras de residuos en Cataluña.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Producto</h5>
+        <a href="#demo">Demo</a>
+        <a href="#cifras">Cifras</a>
+        <a href="#precios">Precios</a>
+      </div>
+      <div class="footer-col">
+        <h5>Fuentes de datos</h5>
+        <a href="https://prtr-es.miteco.gob.es/" target="_blank" rel="noopener">PRTR-ES MITECO</a>
+        <a href="https://analisi.transparenciacatalunya.cat/" target="_blank" rel="noopener">Dades Obertes Catalunya</a>
+        <a href="https://www.openstreetmap.org/" target="_blank" rel="noopener">OpenStreetMap</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <p>Datos derivados de fuentes públicas con licencia compatible para uso comercial. Atribución obligatoria. Sin sublicenciamiento.</p>
+        <p>© 2026 Yoel Castaño</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll para anchors
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+      });
+    });
+
+    // Detectar si el iframe no carga (Streamlit Cloud caído) y mostrar fallback
+    const iframe = document.getElementById('demo-iframe');
+    if (iframe) {
+      const fallback = document.querySelector('.demo-fallback');
+      iframe.addEventListener('error', () => {
+        fallback.style.display = 'block';
+      });
+      // Si no carga en 8s, mostrar también el fallback como ayuda
+      setTimeout(() => {
+        if (!iframe.complete) fallback.classList.add('show-after-timeout');
+      }, 8000);
+    }
+  </script>
+</body>
+</html>
