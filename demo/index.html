@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Demo — residuos.cat</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%BB%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --primary: #1a3a5c;
+      --primary-dark: #0f2540;
+      --primary-light: #2a5680;
+      --accent: #2da776;
+      --accent-light: #44c290;
+      --warn: #c97a1f;
+      --text: #1a1a1a;
+      --text-soft: #555;
+      --text-mute: #7a8493;
+      --bg: #ffffff;
+      --bg-alt: #f5f7fa;
+      --bg-sunken: #eef1f6;
+      --border: #e4e8ee;
+      --border-strong: #c9d0db;
+      --shadow: 0 2px 8px rgba(15, 37, 64, 0.06);
+      --shadow-lg: 0 10px 30px rgba(15, 37, 64, 0.12);
+      --radius: 8px;
+      --radius-lg: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg-alt);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--primary); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Header ─────────────────────────────────────── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; background: #fff; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+    }
+    .topbar .brand { font-weight: 800; color: var(--primary-dark); font-size: 1.05rem; }
+    .topbar .brand small { font-weight: 500; color: var(--text-mute); margin-left: 8px; }
+    .topbar nav a { font-size: 13px; color: var(--text-soft); margin-left: 18px; }
+    .topbar nav a:focus-visible, .topbar nav a:hover { color: var(--primary); }
+
+    /* ── Loader ─────────────────────────────────────── */
+    #loader {
+      position: fixed; inset: 0; background: var(--bg-alt);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; transition: opacity .35s ease;
+    }
+    #loader.done { opacity: 0; pointer-events: none; }
+    .loader-card {
+      background: #fff; padding: 28px 32px; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); width: min(440px, 90%); text-align: center;
+    }
+    .loader-card h2 { color: var(--primary-dark); font-size: 1.05rem; margin-bottom: 6px; }
+    .loader-card p  { color: var(--text-mute); font-size: 13px; margin-bottom: 18px; }
+    .progress-track {
+      height: 6px; width: 100%; background: var(--bg-sunken);
+      border-radius: 99px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; width: 4%; background: var(--accent);
+      border-radius: 99px; transition: width .25s ease;
+    }
+    .progress-label {
+      margin-top: 10px; font-size: 12px; color: var(--text-mute);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ── Layout principal ───────────────────────────── */
+    main { display: grid; grid-template-columns: 320px 1fr; gap: 16px; padding: 16px; }
+    @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+
+    aside.filters, section.results {
+      background: #fff; border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 18px;
+    }
+    aside.filters { position: sticky; top: 60px; align-self: start; max-height: calc(100vh - 80px); overflow-y: auto; }
+
+    .filter-block { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .filter-block:last-child { border-bottom: 0; margin-bottom: 0; }
+    .filter-block h3 {
+      font-size: 12px; text-transform: uppercase; letter-spacing: .06em;
+      color: var(--text-mute); margin-bottom: 10px; font-weight: 700;
+    }
+
+    label.field { display: block; font-size: 13px; color: var(--text-soft); margin-bottom: 8px; }
+    label.field strong { color: var(--text); font-weight: 600; }
+
+    select, input[type="text"], input[type="number"] {
+      width: 100%; padding: 8px 10px; border: 1px solid var(--border-strong);
+      border-radius: var(--radius); font-family: inherit; font-size: 13px;
+      background: #fff; color: var(--text);
+    }
+    select:focus-visible, input:focus-visible {
+      outline: 2px solid var(--primary-light); outline-offset: 1px; border-color: var(--primary);
+    }
+
+    input[type="range"] { width: 100%; accent-color: var(--primary); }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--bg-sunken); border: 1px solid var(--border);
+      border-radius: 99px; padding: 4px 10px; font-size: 12px;
+      cursor: pointer; user-select: none; color: var(--text-soft);
+    }
+    .chip:hover { background: var(--border); }
+    .chip[aria-pressed="true"] {
+      background: var(--primary); color: #fff; border-color: var(--primary);
+    }
+    .chip:focus-visible { outline: 2px solid var(--primary-light); outline-offset: 1px; }
+
+    .reset-btn {
+      width: 100%; padding: 8px 12px; background: #fff;
+      border: 1px solid var(--border-strong); border-radius: var(--radius);
+      color: var(--text-soft); cursor: pointer; font-size: 12px; font-weight: 600;
+    }
+    .reset-btn:hover { background: var(--bg-sunken); }
+
+    /* ── KPIs ───────────────────────────────────────── */
+    .kpis {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px; margin-bottom: 16px;
+    }
+    .kpi {
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 14px;
+    }
+    .kpi .label { font-size: 11px; text-transform: uppercase; color: var(--text-mute); letter-spacing: .05em; }
+    .kpi .value { font-size: 1.4rem; font-weight: 800; color: var(--primary-dark); font-variant-numeric: tabular-nums; }
+    .kpi .sub { font-size: 11px; color: var(--text-mute); }
+
+    /* ── Mapa SVG ───────────────────────────────────── */
+    .map-wrap {
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px; margin-bottom: 16px;
+    }
+    .map-wrap h3 {
+      font-size: 12px; text-transform: uppercase; letter-spacing: .05em;
+      color: var(--text-mute); margin-bottom: 8px; font-weight: 700;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    svg.map { display: block; width: 100%; height: auto; background: #fff; border-radius: 6px; }
+    svg.map rect.prov-box { fill: none; stroke: var(--border-strong); stroke-dasharray: 4 4; }
+    svg.map text.prov-label { font-size: 10px; fill: var(--text-mute); font-family: inherit; }
+    svg.map circle.dot { transition: r .15s ease; }
+    svg.map circle.dot:hover { stroke: var(--primary-dark); stroke-width: 1.2; }
+    svg.map .legend { font-size: 10px; fill: var(--text-mute); }
+
+    /* ── Tabla ─────────────────────────────────────── */
+    .table-wrap {
+      background: var(--bg-alt); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px; overflow-x: auto;
+    }
+    .table-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; gap: 12px; flex-wrap: wrap;
+    }
+    .table-toolbar h3 { font-size: 13px; color: var(--text); }
+    .topn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-soft); }
+    .topn select { width: auto; padding: 4px 8px; font-size: 12px; }
+    table.leads { width: 100%; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; }
+    table.leads th, table.leads td {
+      padding: 8px 10px; text-align: left; font-size: 12.5px;
+      border-bottom: 1px solid var(--border);
+    }
+    table.leads th {
+      background: var(--bg-sunken); color: var(--text-soft);
+      font-weight: 600; text-transform: uppercase; font-size: 10px;
+      letter-spacing: .05em; cursor: pointer; user-select: none;
+      position: sticky; top: 0;
+    }
+    table.leads th[aria-sort="ascending"]::after { content: " ▲"; color: var(--primary); }
+    table.leads th[aria-sort="descending"]::after { content: " ▼"; color: var(--primary); }
+    table.leads td.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.leads tr:hover td { background: var(--bg-alt); }
+    .tag {
+      display: inline-block; padding: 1px 7px; border-radius: 99px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    }
+    .tag-danger  { background: #fde8e0; color: #9c3a06; }
+    .tag-safe    { background: #e3f6ec; color: #14633c; }
+    .tag-mixed   { background: #fff4d6; color: #6a5106; }
+    .tag-mute    { background: var(--bg-sunken); color: var(--text-mute); }
+    .tag-gestor  { background: #ffe4e6; color: #881337; }
+    .empty {
+      padding: 60px 20px; text-align: center; color: var(--text-mute);
+      background: #fff; border-radius: 6px;
+    }
+
+    /* ── Caveats ───────────────────────────────────── */
+    .caveats {
+      margin-top: 16px; padding: 12px 14px;
+      background: #fff8ed; border: 1px solid #f5dcb0; border-radius: var(--radius);
+      color: #6a5106; font-size: 12.5px;
+    }
+    .caveats strong { color: #5a4506; }
+    .caveats ul { margin: 6px 0 0 18px; }
+    .caveats li { margin-bottom: 3px; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">♻️ residuos.cat <small>Demo interactiva</small></div>
+    <nav>
+      <a href="/">← Volver a la landing</a>
+      <a href="#caveats">Cómo leer la demo</a>
+    </nav>
+  </header>
+
+  <div id="loader" role="status" aria-live="polite">
+    <div class="loader-card">
+      <h2 id="loader-title">Cargando el dataset</h2>
+      <p id="loader-detail">21.600 leads PRTR-ES de Cataluña. Sin servicios externos.</p>
+      <div class="progress-track" aria-hidden="true">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      <div class="progress-label" id="progress-label">Preparando…</div>
+    </div>
+  </div>
+
+  <main hidden id="app">
+    <aside class="filters" aria-label="Filtros">
+      <div class="filter-block">
+        <h3>Tipología de residuo</h3>
+        <label class="field" for="f-chapter">
+          <strong>Capítulo LER</strong>
+          <select id="f-chapter" aria-describedby="hint-chapter"><option value="">Todos</option></select>
+        </label>
+        <small id="hint-chapter" class="sr-only">Filtra por el capítulo del Catálogo Europeo de Residuos.</small>
+        <label class="field"><strong>Clasificación</strong></label>
+        <div class="chips" id="f-clasificacion" role="group" aria-label="Clasificación de peligrosidad"></div>
+        <label class="field" style="margin-top:10px"><strong>Vía de gestión</strong></label>
+        <div class="chips" id="f-treatment" role="group" aria-label="Vía de gestión"></div>
+      </div>
+
+      <div class="filter-block">
+        <h3>Geografía</h3>
+        <label class="field" for="f-provincia">
+          <strong>Provincia</strong>
+          <select id="f-provincia"><option value="">Todas</option></select>
+        </label>
+      </div>
+
+      <div class="filter-block">
+        <h3>Calidad del lead</h3>
+        <label class="field"><strong>Tipo</strong></label>
+        <div class="chips" id="f-lead-type" role="group" aria-label="Tipo de lead"></div>
+        <label class="field" for="f-score" style="margin-top:12px">
+          <strong>Score mínimo:</strong>
+          <span id="f-score-val" style="color:var(--primary); font-weight:700">0</span>
+          <input id="f-score" type="range" min="0" max="100" step="1" value="0">
+        </label>
+        <label class="field" for="f-tonnes">
+          <strong>Tonelaje mínimo (t/año):</strong>
+          <span id="f-tonnes-val" style="color:var(--primary); font-weight:700">0</span>
+          <input id="f-tonnes" type="range" min="0" max="500" step="1" value="0">
+        </label>
+      </div>
+
+      <div class="filter-block">
+        <h3>Búsqueda</h3>
+        <label class="field" for="f-search">
+          <strong>Empresa o residuo</strong>
+          <input id="f-search" type="text" placeholder="Ej.: COVESTRO, disolventes…" autocomplete="off">
+        </label>
+      </div>
+
+      <button class="reset-btn" id="reset-btn" type="button">Limpiar todos los filtros</button>
+    </aside>
+
+    <section class="results" aria-label="Resultados">
+      <div class="kpis" id="kpis"></div>
+
+      <div class="map-wrap">
+        <h3>
+          <span>Distribución geográfica</span>
+          <span style="font-size:11px; font-weight:500; color:var(--text-mute)" id="map-caveat"></span>
+        </h3>
+        <svg class="map" id="map" viewBox="0 0 700 420" role="img" aria-label="Mapa de leads en Cataluña"></svg>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <h3>Top leads por score</h3>
+          <span class="topn">
+            <label for="topn">Mostrar:</label>
+            <select id="topn">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="250">250</option>
+            </select>
+          </span>
+        </div>
+        <table class="leads" id="table">
+          <thead>
+            <tr>
+              <th data-sort="score" aria-sort="descending">Score</th>
+              <th data-sort="facility">Empresa</th>
+              <th data-sort="ler">LER</th>
+              <th>Residuo</th>
+              <th data-sort="tonnes">t/año</th>
+              <th>Provincia</th>
+              <th>Clasif.</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+        <div id="empty" class="empty" hidden>
+          <p>No hay leads que cumplan los filtros. Prueba a relajar el score mínimo o el tonelaje.</p>
+        </div>
+      </div>
+
+      <aside id="caveats" class="caveats" aria-label="Cómo leer la demo">
+        <strong>Cómo leer esta demo (importante para no sacar conclusiones equivocadas)</strong>
+        <ul>
+          <li><strong>Contactos ocultos.</strong> Email, teléfono y NIF están a nulo en el dataset público. En la entrega completa van por tier.</li>
+          <li><strong>Tonelaje declarado.</strong> Procede de declaraciones PRTR-ES; orientativo, no contractual. PRTR publica con 1–2 años de desfase.</li>
+          <li><strong>Coordenada aproximada.</strong> Un porcentaje de empresas no se ha podido geocodificar y se posiciona en el centroide de su provincia (marcado con borde gris). El contador del mapa lo indica.</li>
+          <li><strong>Productor vs gestor.</strong> El sistema marca como “gestor sospechoso” a quien parece tratar residuos (regex sobre el nombre). El cliente debe revisar el flag manualmente.</li>
+          <li><strong>Universo PRTR.</strong> Solo grandes complejos del Anexo I del RD 508/2007. No incluye pymes pequeñas; eso requiere RGPPRC (pendiente con ARC).</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+  (() => {
+    const state = {
+      meta: null,
+      data: null,
+      filters: {
+        chapter: '', provincia: '', clasificacion: new Set(), treatment: new Set(),
+        leadType: new Set(['productor']),  // por defecto, solo productores
+        scoreMin: 0, tonnesMin: 0, search: '',
+      },
+      sort: { key: 'score', dir: 'desc' },
+      topN: 50,
+      indexFiltered: [],  // array de índices que cumplen filtros
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const fmt = (n, d = 0) => n == null ? '—' : Number(n).toLocaleString('es-ES', { maximumFractionDigits: d });
+
+    // ── Carga con progress real ──────────────────────────────────
+    async function fetchWithProgress(url, onProgress) {
+      const res = await fetch(url, { cache: 'force-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status} en ${url}`);
+      const total = +(res.headers.get('Content-Length') || 0);
+      // Si el servidor no envía Content-Length (común con gzip), caemos a un fetch normal con progreso indeterminado.
+      if (!total || !res.body) {
+        const text = await res.text();
+        onProgress(1, 1);
+        return JSON.parse(text);
+      }
+      const reader = res.body.getReader();
+      const chunks = []; let received = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value); received += value.length;
+        onProgress(received, total);
+      }
+      const blob = new Blob(chunks);
+      return JSON.parse(await blob.text());
+    }
+
+    async function bootstrap() {
+      const bar = $('progress-bar'), label = $('progress-label'), title = $('loader-title');
+
+      try {
+        title.textContent = 'Catálogos del dataset';
+        const meta = await fetchWithProgress('./data/meta.json', (r, t) => {
+          const pct = Math.min(15, Math.round((r / Math.max(t, 1)) * 15));
+          bar.style.width = pct + '%';
+          label.textContent = `Catálogos · ${(r / 1024).toFixed(0)} KB`;
+        });
+        state.meta = meta;
+        // Pintamos filtros ya, mientras descarga el bundle grande.
+        renderFilters();
+        renderEmptyMap();
+
+        title.textContent = 'Cargando 21.600 leads';
+        const data = await fetchWithProgress('./data/leads.json', (r, t) => {
+          const pct = 15 + Math.round((r / Math.max(t, 1)) * 80);
+          bar.style.width = pct + '%';
+          if (t) label.textContent = `${(r / 1024).toFixed(0)} / ${(t / 1024).toFixed(0)} KB`;
+          else label.textContent = `${(r / 1024).toFixed(0)} KB`;
+        });
+        state.data = data;
+
+        // Calculamos filtros + KPIs + tabla síncronamente (rápido, ~25 ms).
+        // Cuando estos están listos, revelamos el panel y RETIRAMOS el loader
+        // sin transición — una UX predecible vale más que una animación que
+        // pelea con el render pesado del mapa.
+        bar.style.width = '100%';
+        label.textContent = 'Listo';
+        computeFiltered();
+        renderKpis();
+        renderTable();
+        $('app').hidden = false;
+        $('loader').remove();
+        // El mapa SVG (~2.000 nodos) se difiere a un frame posterior para
+        // que el usuario lea los KPIs y la tabla sin esperarlo.
+        requestAnimationFrame(renderMap);
+      } catch (err) {
+        title.textContent = 'No se pudo cargar el dataset';
+        label.textContent = String(err && err.message || err);
+        bar.style.background = '#c4564a';
+      }
+    }
+
+    // ── Filtros ───────────────────────────────────────────────────
+    function chipGroup(container, values, stateSet, prettify = (v) => v) {
+      container.innerHTML = '';
+      values.forEach((v) => {
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'chip'; b.textContent = prettify(v);
+        b.setAttribute('aria-pressed', stateSet.has(v) ? 'true' : 'false');
+        b.addEventListener('click', () => {
+          if (stateSet.has(v)) stateSet.delete(v); else stateSet.add(v);
+          b.setAttribute('aria-pressed', stateSet.has(v) ? 'true' : 'false');
+          applyFilters();
+        });
+        container.appendChild(b);
+      });
+    }
+
+    function renderFilters() {
+      const m = state.meta;
+      // Capítulo LER
+      const sel = $('f-chapter');
+      for (const c of m.facets.chapter) {
+        const o = document.createElement('option'); o.value = c; o.textContent = `${c} — ${chapterLabel(c)}`; sel.appendChild(o);
+      }
+      sel.addEventListener('change', (e) => { state.filters.chapter = e.target.value; applyFilters(); });
+
+      // Provincia
+      const selP = $('f-provincia');
+      for (const p of m.facets.provincia) {
+        const o = document.createElement('option'); o.value = p; o.textContent = p; selP.appendChild(o);
+      }
+      selP.addEventListener('change', (e) => { state.filters.provincia = e.target.value; applyFilters(); });
+
+      // Clasificación (P / NP / DP)
+      chipGroup($('f-clasificacion'), m.facets.clasificacion, state.filters.clasificacion,
+        (v) => ({ P: 'Peligroso', NP: 'No peligroso', DP: 'Doble entrada' }[v] || v));
+
+      // Vía de gestión
+      chipGroup($('f-treatment'), m.facets.treatment_kind, state.filters.treatment,
+        (v) => ({ R: 'Valorización (R)', D: 'Eliminación (D)' }[v] || v));
+
+      // Tipo lead
+      chipGroup($('f-lead-type'), m.facets.lead_type, state.filters.leadType,
+        (v) => ({ productor: 'Productor', gestor_sospechoso: 'Gestor (filtrar)' }[v] || v));
+
+      // Sliders
+      const tmax = Math.min(m.ranges.tonnes[1], 5000);
+      const tEl = $('f-tonnes'); tEl.max = String(tmax);
+      tEl.addEventListener('input', (e) => {
+        state.filters.tonnesMin = +e.target.value; $('f-tonnes-val').textContent = fmt(state.filters.tonnesMin);
+        applyFilters();
+      });
+      $('f-score').addEventListener('input', (e) => {
+        state.filters.scoreMin = +e.target.value; $('f-score-val').textContent = e.target.value;
+        applyFilters();
+      });
+
+      $('f-search').addEventListener('input', debounce((e) => {
+        state.filters.search = e.target.value.trim().toLowerCase(); applyFilters();
+      }, 180));
+
+      $('topn').addEventListener('change', (e) => { state.topN = +e.target.value; renderTable(); });
+
+      $('reset-btn').addEventListener('click', resetFilters);
+
+      // Sort headers
+      document.querySelectorAll('th[data-sort]').forEach((th) => {
+        th.addEventListener('click', () => toggleSort(th.dataset.sort));
+      });
+    }
+
+    function resetFilters() {
+      state.filters = {
+        chapter: '', provincia: '', clasificacion: new Set(), treatment: new Set(),
+        leadType: new Set(['productor']), scoreMin: 0, tonnesMin: 0, search: '',
+      };
+      $('f-chapter').value = ''; $('f-provincia').value = '';
+      $('f-score').value = '0'; $('f-score-val').textContent = '0';
+      $('f-tonnes').value = '0'; $('f-tonnes-val').textContent = '0';
+      $('f-search').value = '';
+      // Re-render chips para reflejar el reset
+      const m = state.meta;
+      chipGroup($('f-clasificacion'), m.facets.clasificacion, state.filters.clasificacion,
+        (v) => ({ P: 'Peligroso', NP: 'No peligroso', DP: 'Doble entrada' }[v] || v));
+      chipGroup($('f-treatment'), m.facets.treatment_kind, state.filters.treatment,
+        (v) => ({ R: 'Valorización (R)', D: 'Eliminación (D)' }[v] || v));
+      chipGroup($('f-lead-type'), m.facets.lead_type, state.filters.leadType,
+        (v) => ({ productor: 'Productor', gestor_sospechoso: 'Gestor (filtrar)' }[v] || v));
+      applyFilters();
+    }
+
+    function toggleSort(key) {
+      if (state.sort.key === key) {
+        state.sort.dir = state.sort.dir === 'desc' ? 'asc' : 'desc';
+      } else {
+        state.sort.key = key; state.sort.dir = key === 'facility' || key === 'ler' ? 'asc' : 'desc';
+      }
+      document.querySelectorAll('th[data-sort]').forEach((th) => {
+        th.setAttribute('aria-sort', th.dataset.sort === key ? (state.sort.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+      });
+      renderTable();
+    }
+
+    function debounce(fn, ms) {
+      let t = 0; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+    }
+
+    // ── Cálculo de filtros ───────────────────────────────────────
+    // Separamos el COMPUTE (rápido, ~10ms) de los RENDER (más caros). El
+    // applyFilters() público los une, pero en el primer bootstrap los
+    // separamos en frames distintos para no bloquear el reveal del panel.
+    function computeFiltered() {
+      const d = state.data, f = state.filters, m = state.meta;
+      if (!d) return;
+      const facVocab = m.vocab.facility, descVocab = m.vocab.descripcion, lerDescVocab = m.vocab.ler_desc;
+      const out = [];
+      const facMatch = new Uint8Array(facVocab.length);
+      const descMatch = new Uint8Array(descVocab.length);
+      const lerDescMatch = new Uint8Array(lerDescVocab.length);
+      if (f.search) {
+        const q = f.search;
+        for (let i = 0; i < facVocab.length; i++) facMatch[i] = facVocab[i].toLowerCase().includes(q) ? 1 : 0;
+        for (let i = 0; i < descVocab.length; i++) descMatch[i] = descVocab[i].toLowerCase().includes(q) ? 1 : 0;
+        for (let i = 0; i < lerDescVocab.length; i++) lerDescMatch[i] = lerDescVocab[i].toLowerCase().includes(q) ? 1 : 0;
+      }
+      const wantsLead = f.leadType.size > 0;
+      const wantsCl = f.clasificacion.size > 0;
+      const wantsT = f.treatment.size > 0;
+      // Precomputamos índice de provincia objetivo (si hay)
+      const provTarget = f.provincia ? m.vocab.provincia.indexOf(f.provincia) : -1;
+
+      for (let i = 0; i < d.n; i++) {
+        if (f.chapter && d.chapter[i] !== f.chapter) continue;
+        if (provTarget !== -1 && d.provincia_idx[i] !== provTarget) continue;
+        if (wantsCl && !f.clasificacion.has(d.clasificacion[i])) continue;
+        if (wantsT && !f.treatment.has(d.treatment_kind[i])) continue;
+        if (wantsLead && !f.leadType.has(d.lead_type[i])) continue;
+        if (d.score[i] < f.scoreMin) continue;
+        if (d.tonnes[i] < f.tonnesMin) continue;
+        if (f.search) {
+          if (!facMatch[d.facility_idx[i]] && !descMatch[d.descripcion_idx[i]] && !lerDescMatch[d.ler_desc_idx[i]]) continue;
+        }
+        out.push(i);
+      }
+      state.indexFiltered = out;
+    }
+
+    function applyFilters() {
+      computeFiltered();
+      renderKpis();
+      renderTable();
+      // El mapa se difiere a otro frame: 1.500-2.000 nodos SVG son lo
+      // suficientemente pesados como para meterse en su propio ciclo y no
+      // notarse mientras el usuario lee KPIs + tabla.
+      requestAnimationFrame(renderMap);
+    }
+
+    // ── KPIs ─────────────────────────────────────────────────────
+    function renderKpis() {
+      const d = state.data, idxs = state.indexFiltered;
+      let total = idxs.length, sumT = 0, geoExact = 0, top = 0, prods = 0, gestores = 0;
+      for (const i of idxs) {
+        sumT += d.tonnes[i] || 0;
+        if (d.geo_exact[i]) geoExact++;
+        if (d.score[i] > top) top = d.score[i];
+        if (d.lead_type[i] === 'productor') prods++; else gestores++;
+      }
+      const pctGeo = total ? Math.round(100 * geoExact / total) : 0;
+      $('kpis').innerHTML = `
+        <div class="kpi"><div class="label">Leads filtrados</div><div class="value">${fmt(total)}</div><div class="sub">de ${fmt(d.n)} totales</div></div>
+        <div class="kpi"><div class="label">Tonelaje agregado</div><div class="value">${fmt(sumT, 0)}</div><div class="sub">t/año declarados</div></div>
+        <div class="kpi"><div class="label">Score máximo</div><div class="value">${fmt(top, 1)}</div><div class="sub">de 100</div></div>
+        <div class="kpi"><div class="label">Coord. precisa</div><div class="value">${pctGeo}%</div><div class="sub">${fmt(geoExact)} de ${fmt(total)}</div></div>
+        <div class="kpi"><div class="label">Productores</div><div class="value">${fmt(prods)}</div><div class="sub">${fmt(gestores)} gestores marcados</div></div>
+      `;
+    }
+
+    // ── Mapa SVG ─────────────────────────────────────────────────
+    const MAP = { W: 700, H: 420, padX: 30, padY: 30, lat: [40.5, 42.85], lon: [0.05, 3.4] };
+    function project(lat, lon) {
+      const x = MAP.padX + ((lon - MAP.lon[0]) / (MAP.lon[1] - MAP.lon[0])) * (MAP.W - 2 * MAP.padX);
+      // y invertida (lat alta = arriba)
+      const y = MAP.padY + (1 - (lat - MAP.lat[0]) / (MAP.lat[1] - MAP.lat[0])) * (MAP.H - 2 * MAP.padY);
+      return [x, y];
+    }
+    function renderEmptyMap() {
+      // Cajas aproximadas por provincia (lat/lon)
+      const bbox = {
+        'Barcelona': [41.30, 42.05, 1.65, 2.85],
+        'Girona':    [41.70, 42.85, 2.10, 3.40],
+        'Lleida':    [41.00, 42.85, 0.05, 1.65],
+        'Tarragona': [40.50, 41.50, 0.20, 1.90],
+      };
+      const svg = $('map');
+      let s = '';
+      for (const [name, b] of Object.entries(bbox)) {
+        const [x1, y1] = project(b[1], b[2]);  // top-left = lat alta, lon baja
+        const [x2, y2] = project(b[0], b[3]);  // bottom-right = lat baja, lon alta
+        s += `<rect class="prov-box" x="${x1}" y="${y1}" width="${x2 - x1}" height="${y2 - y1}" rx="6"/>`;
+        s += `<text class="prov-label" x="${x1 + 6}" y="${y1 + 14}">${name}</text>`;
+      }
+      s += `<text class="legend" x="${MAP.W - 8}" y="${MAP.H - 8}" text-anchor="end">Coord. PRTR-ES + ICGC · proyección lineal lat/lon</text>`;
+      svg.innerHTML = s;
+    }
+    function renderMap() {
+      const d = state.data, idxs = state.indexFiltered;
+      renderEmptyMap();
+      const svg = $('map');
+      // Limitamos el sample para no congelar el navegador. 2.000 nodos SVG
+      // pintan en ~60-150 ms en hardware razonable.
+      const SAMPLE = 2000;
+      const step = idxs.length > SAMPLE ? Math.ceil(idxs.length / SAMPLE) : 1;
+      let dots = '', shown = 0, approx = 0;
+      for (let k = 0; k < idxs.length; k += step) {
+        const i = idxs[k];
+        const [x, y] = project(d.lat[i], d.lon[i]);
+        const exact = d.geo_exact[i];
+        if (!exact) approx++;
+        const score = d.score[i];
+        const r = 2.2 + (score / 100) * 3.2;
+        const fill = score >= 70 ? '#2da776' : score >= 40 ? '#5d8fc5' : '#9aa6b4';
+        const op = exact ? 0.78 : 0.5;
+        const stroke = exact ? 'none' : '#8a96a7';
+        dots += `<circle class="dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r.toFixed(1)}" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="0.6"><title>${facName(i)} · ${d.ler_code[i]} · ${fmt(d.tonnes[i], 1)} t/año · score ${fmt(score, 1)}</title></circle>`;
+        shown++;
+      }
+      svg.insertAdjacentHTML('beforeend', dots);
+      const total = idxs.length;
+      const txt = total === 0 ? 'Sin resultados con los filtros actuales'
+        : (step > 1 ? `Muestreo: ${fmt(shown)} de ${fmt(total)} · ` : `${fmt(total)} leads · `)
+          + `${fmt(approx)} con coord. aprox. (centroide provincia)`;
+      $('map-caveat').textContent = txt;
+    }
+
+    // ── Tabla ────────────────────────────────────────────────────
+    function renderTable() {
+      const d = state.data, idxs = state.indexFiltered;
+      const sortKey = state.sort.key, dir = state.sort.dir === 'asc' ? 1 : -1;
+      const get = {
+        score:    (i) => d.score[i] ?? 0,
+        tonnes:   (i) => d.tonnes[i] ?? 0,
+        facility: (i) => facName(i).toLowerCase(),
+        ler:      (i) => d.ler_code[i],
+      };
+      const f = get[sortKey] || get.score;
+      const sorted = idxs.slice().sort((a, b) => {
+        const va = f(a), vb = f(b);
+        if (va < vb) return -1 * dir;
+        if (va > vb) return 1 * dir;
+        return 0;
+      });
+      const top = sorted.slice(0, state.topN);
+      const tbody = $('tbody');
+      $('empty').hidden = sorted.length > 0;
+      if (sorted.length === 0) { tbody.innerHTML = ''; return; }
+
+      const rows = [];
+      for (const i of top) {
+        rows.push(`<tr>
+          <td class="num"><strong>${fmt(d.score[i], 1)}</strong></td>
+          <td>${escapeHtml(facName(i))}${d.lead_type[i] === 'gestor_sospechoso' ? ' <span class="tag tag-gestor">Gestor</span>' : ''}</td>
+          <td><code>${d.ler_code[i]}</code></td>
+          <td>${escapeHtml(lerDesc(i))}</td>
+          <td class="num">${fmt(d.tonnes[i], 1)}</td>
+          <td>${escapeHtml(provName(i))}</td>
+          <td>${classifTag(d.clasificacion[i])}</td>
+        </tr>`);
+      }
+      tbody.innerHTML = rows.join('');
+    }
+
+    function classifTag(c) {
+      if (c === 'P') return '<span class="tag tag-danger">Peligroso</span>';
+      if (c === 'NP') return '<span class="tag tag-safe">No peligroso</span>';
+      if (c === 'DP') return '<span class="tag tag-mixed">Doble</span>';
+      return `<span class="tag tag-mute">${escapeHtml(c || '')}</span>`;
+    }
+
+    function facName(i) { return state.meta.vocab.facility[state.data.facility_idx[i]] || ''; }
+    function lerDesc(i) { return state.meta.vocab.ler_desc[state.data.ler_desc_idx[i]] || ''; }
+    function provName(i) { return state.meta.vocab.provincia[state.data.provincia_idx[i]] || ''; }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+
+    // Etiquetas amigables de capítulo LER (los más comunes).
+    function chapterLabel(c) {
+      const map = {
+        '01': 'Prospección/minería', '02': 'Agro/alimentación', '03': 'Madera y papel',
+        '04': 'Cuero/textil', '05': 'Refino petróleo', '06': 'Química inorgánica',
+        '07': 'Química orgánica', '08': 'Pinturas/adhesivos', '09': 'Industria fotográfica',
+        '10': 'Térmicos/centrales', '11': 'Tratamiento metales', '12': 'Mecanizado metales',
+        '13': 'Aceites usados', '14': 'Disolventes', '15': 'Envases',
+        '16': 'No especificados', '17': 'Construcción/demolición', '18': 'Sanitarios',
+        '19': 'Plantas de tratamiento', '20': 'Municipales',
+      };
+      return map[c] || '—';
+    }
+
+    bootstrap();
+  })();
+  </script>
+</body>
+</html>
