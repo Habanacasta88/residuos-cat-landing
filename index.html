@@ -47,7 +47,7 @@
           con la planta de tu gestora.
         </p>
         <div class="hero-ctas">
-          <a href="#demo" class="btn btn-primary">Probar la demo en vivo</a>
+          <a href="./demo/" class="btn btn-primary">Probar la demo en vivo</a>
           <a href="#contacto" class="btn btn-secondary">Solicitar dataset completo</a>
         </div>
         <p class="hero-fineprint">
@@ -74,25 +74,17 @@
       </p>
 
       <div class="demo-card">
-        <div class="demo-iframe-wrap">
-          <!--
-            EN PRODUCCIÓN: cambiar este iframe por la URL del despliegue.
-            Ejemplos:
-              https://residuos-cat-demo-yrib9nrnprnytuqxcite9r.streamlit.app/
-              https://huggingface.co/spaces/Habanacasta88/residuos-cat
-          -->
-          <iframe
-            id="demo-iframe"
-            src="https://residuos-cat-demo-yrib9nrnprnytuqxcite9r.streamlit.app/?embed=true"
-            title="Dashboard demo Residuos Catalunya"
-            loading="lazy"
-            allow="fullscreen"></iframe>
-          <div class="demo-fallback">
-            <p>¿El dashboard no carga? Abre en una pestaña nueva:</p>
-            <a href="https://residuos-cat-demo-yrib9nrnprnytuqxcite9r.streamlit.app/" target="_blank" rel="noopener" class="btn btn-primary">
-              Abrir dashboard demo →
-            </a>
-          </div>
+        <div class="demo-cta">
+          <p style="font-size: 14px; color: #cfd6e1; margin-bottom: 18px;">
+            Panel estático servido desde CDN. Sin servidores que se duermen,
+            sin cold start. Filtros, mapa y tabla sobre los 21.600 leads PRTR-ES.
+          </p>
+          <a href="./demo/" class="btn btn-primary" style="font-size: 15px; padding: 14px 28px;">
+            Abrir la demo interactiva →
+          </a>
+          <p style="margin-top: 14px; font-size: 12px; color: #8fa0b6;">
+            Carga en &lt; 2 s sobre 4G. ~250 KB gzipped. Sin servicios externos.
+          </p>
         </div>
       </div>
     </div>
@@ -387,18 +379,8 @@
       });
     });
 
-    // Detectar si el iframe no carga (Streamlit Cloud caído) y mostrar fallback
-    const iframe = document.getElementById('demo-iframe');
-    if (iframe) {
-      const fallback = document.querySelector('.demo-fallback');
-      iframe.addEventListener('error', () => {
-        fallback.style.display = 'block';
-      });
-      // Si no carga en 8s, mostrar también el fallback como ayuda
-      setTimeout(() => {
-        if (!iframe.complete) fallback.classList.add('show-after-timeout');
-      }, 8000);
-    }
+    // La demo ahora es un panel estático servido desde la misma CDN (web/demo/).
+    // No hay iframe que vigilar.
   </script>
 </body>
 </html>
